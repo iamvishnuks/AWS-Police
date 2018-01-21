@@ -1,7 +1,25 @@
 import boto3
 from tqdm import *
 client=boto3.client('ec2')
+a=''
 
+print '''
+  ___  _    _ _____  ______ _____ _ _          
+ / _ \| |  | /  ___| | ___ \  _  | (_)         
+/ /_\ \ |  | \ `--.  | |_/ / | | | |_  ___ ___ 
+|  _  | |/\| |`--. \ |  __/| | | | | |/ __/ _ \
+| | | \  /\  /\__/ / | |   \ \_/ / | | (_|  __/
+\_| |_/\/  \/\____/  \_|    \___/|_|_|\___\___|
+                                               
+                                            
+         +-+-+-+-+-+-+ +-+-+
+author : |V|i|s|h|n|u| |K|S|
+         +-+-+-+-+-+-+ +-+-+
+Development of this tool is still in progress. Currently you can view your running instances in a single run.
+This program will search in all regions for ec2 instances. You have to create a user with programatic access and attach a role
+with full access to ec2. Configure aws credentials in your environment by running 'aws configure' command in your CLI.
+If you want to delete all the instances that also you can perform easily without going to the never loading aws dashboard.
+'''
 #Get all region names
 regions = client.describe_regions()
   #print "Number of available regions :", len(regions['Regions'])
@@ -32,6 +50,14 @@ def get_all_subnets():
       sub_ids.append(subid['SubnetId'])
     subnets[region['RegionName']]=sub_ids
     return subnets
+
+
+def get_all_natgw():
+  natgws={}
+  for region in regions['Regions']:
+    nat_client=boto3.client('ec2',region_name=region['RegionName'])
+    nat_response=nat_client.describe_nat_gateways()
+
 
 #Get all ec2 informations
 def get_all_ec2():
@@ -69,7 +95,7 @@ for i in tqdm(allfunctions,desc='Patroling in progress'):
 def kill_all_ec2(results):
   for region in results.keys():
     client=boto3.client('ec2',region_name=region)
-    print client.terminate_instances(InstanceIds=results[region])
+    return client.terminate_instances(InstanceIds=results[region])
     
 if len(results[2][1])!=0:
   print "Running instances are listed below: ",results[2][1]
@@ -78,5 +104,6 @@ else:
   print "There's no running instances, your account looks clean"
 
 if a=='y':
+  print "Executing house party protocol.. ;-)"
   k=kill_all_ec2(results[2][1])
   print "Everything is cleaned"
