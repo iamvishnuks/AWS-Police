@@ -50,22 +50,33 @@ def get_all_ec2():
       instances[region['RegionName']]=ec2ids
       ec2_running[region['RegionName']]=ec2_run_ids
       #print region['RegionName'],instance['InstanceId'],instance['State']['Name'],instance['InstanceType']
+  ec2_running=dict((k, v) for k, v in ec2_running.iteritems() if v)
   return instances,ec2_running
 
 allfunctions=[get_all_vpcs,get_all_subnets,get_all_ec2]
 results=[]
+count=0
 for i in tqdm(allfunctions,desc='Patroling in progress'):
-  print "gathering facts"
+  if count==0:
+    print "\nSearching VPC information"
+  elif count==1:
+    print "\nSearching Subnets"
+  elif count==2:
+    print "\nSearching ec2's"
   results.append(i())
+  count+=1
 
 def kill_all_ec2(results):
   for region in results.keys():
     client=boto3.client('ec2',region_name=region)
     print client.terminate_instances(InstanceIds=results[region])
-
-
-print "Running instances are listed below: ",results[2][1]
-a=raw_input("Do you want to kill all instances?(y/n): ")
+    
+if len(results[2][1])!=0:
+  print "Running instances are listed below: ",results[2][1]
+  a=raw_input("Do you want to kill all instances?(y/n): ")
+else:
+  print "There's no running instances, your account looks clean"
 
 if a=='y':
-  kill_all_ec2(results[2][1])
+  k=kill_all_ec2(results[2][1])
+  print "Everything is cleaned"
