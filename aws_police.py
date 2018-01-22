@@ -1,16 +1,17 @@
+# -*- coding: utf-8 -*-
 import boto3
 from tqdm import *
 client=boto3.client('ec2')
 a=''
 
 print '''
-  ___  _    _ _____  ______ _____ _ _          
- / _ \| |  | /  ___| | ___ \  _  | (_)         
-/ /_\ \ |  | \ `--.  | |_/ / | | | |_  ___ ___ 
-|  _  | |/\| |`--. \ |  __/| | | | | |/ __/ _ \
-| | | \  /\  /\__/ / | |   \ \_/ / | | (_|  __/
-\_| |_/\/  \/\____/  \_|    \___/|_|_|\___\___|
-                                               
+ █████╗ ██╗    ██╗███████╗    ██████╗  ██████╗ ██╗     ██╗ ██████╗███████╗    
+██╔══██╗██║    ██║██╔════╝    ██╔══██╗██╔═══██╗██║     ██║██╔════╝██╔════╝    
+███████║██║ █╗ ██║███████╗    ██████╔╝██║   ██║██║     ██║██║     █████╗      
+██╔══██║██║███╗██║╚════██║    ██╔═══╝ ██║   ██║██║     ██║██║     ██╔══╝      
+██║  ██║╚███╔███╔╝███████║    ██║     ╚██████╔╝███████╗██║╚██████╗███████╗    
+╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝    ╚═╝      ╚═════╝ ╚══════╝╚═╝ ╚═════╝╚══════╝    
+                                                                              
                                             
          +-+-+-+-+-+-+ +-+-+
 author : |V|i|s|h|n|u| |K|S|
@@ -51,13 +52,38 @@ def get_all_subnets():
     subnets[region['RegionName']]=sub_ids
     return subnets
 
-
+#Get all nat gateway info
 def get_all_natgw():
   natgws={}
   for region in regions['Regions']:
     nat_client=boto3.client('ec2',region_name=region['RegionName'])
     nat_response=nat_client.describe_nat_gateways()
 
+#Get all elasticbeanstalk environments and applications
+def get_all_ebstalk():
+  ebstalks={}
+  for region in regions['Regions']:
+    ebstalk_client=boto3.client('elasticbeanstalk',region_name=region['RegionName'])
+    ebstalk_response=ebstalk_client.describe_environments()
+    apps_response=ebstalk_client.describe_applications()
+    #print ebstalk_response,apps_response
+
+#Get all load balancer informations
+def get_all_elbs():
+  elbs={}
+  for region in regions['Regions']:
+    elb_client=boto3.client('elb',region_name=region['RegionName'])
+    elb_response=elb_client.describe_load_balancers()
+    #print ebstalk_response,apps_response
+
+#Get all volumes
+def get_all_volumes():
+  volumes={}
+  for region in regions['Regions']:
+    vol_client=boto3.client('ec2',region_name=region['RegionName'])
+    vol_response=vol.describe_volumes()
+    #print ebstalk_response,apps_response
+  
 
 #Get all ec2 informations
 def get_all_ec2():
