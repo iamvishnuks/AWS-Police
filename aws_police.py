@@ -162,7 +162,7 @@ if a=='y':
 
 print "1) VPC's\n2) Subnets\n3)Ec2's\n4) Load balancers\n5) Volumes\n6) NAT GWs"
 
-b="Enter an option to see the results : "
+b=input("Enter an option to see the results : ")
 
 if b==1:
   print results[0]
