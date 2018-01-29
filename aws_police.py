@@ -176,6 +176,7 @@ while True:
     print results[5]
   else:
     print "Enjoy your day.. Bye ;-)"
+    break
 
 
 
