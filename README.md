@@ -7,10 +7,9 @@ search and find the hidden resources which are eating your money.
 
 # Installation
 Install dependecies
-pip install -r requirements.txt
-
+pip install AWS-Police
 # Usage
 Create a user in your AWS account with programatic access and give EC2 full access permission 
 for that user. Then do aws configure to set aws access key and secret key. 
 After setting key run the tool by typing:
-python aws-police.py
+patrol in terminal
