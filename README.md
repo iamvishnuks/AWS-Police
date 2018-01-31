@@ -6,10 +6,9 @@ which region. In that case we can simply run this tool and wait for the results.
 search and find the hidden resources which are eating your money.
 
 # Installation
-Install dependecies
+Install the package
 pip install AWS-Police
 # Usage
 Create a user in your AWS account with programatic access and give EC2 full access permission 
 for that user. Then do aws configure to set aws access key and secret key. 
-After setting key run the tool by typing:
-patrol in terminal
+After setting key run the tool by typing patrol in terminal
