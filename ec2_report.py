@@ -8,7 +8,7 @@ from dateutil.tz import tzutc
 
 
 REGIONS = {
-            "us-east-1":"N.Virginia"
+            "ap-south-1":"Mumbai"
           }
 
 def get_options():
@@ -26,13 +26,18 @@ def get_options():
 
 def format_output_data(instances):
     rows = []
-    headers = ["id", "state", "instance_type", "ip_address", "private_ip_address", \
+    headers = ["id", "state", "instance_type", "public_ip_address", "private_ip_address", \
             "EbsOptimized", "vpc_id", "subnet_id", "image_id", "monitored", "launch_time", "key_name"]
     rows.append(headers)
     for i in instances:
-      row = [i['InstanceId'], i['State']['Name'], i['InstanceType'],i['PublicIpAddress'],i['PrivateIpAddress'], \
-            i['EbsOptimized'], i['VpcId'], i['SubnetId'], i['ImageId'], i['Monitoring']['State'], i['LaunchTime'].strftime("%Y/%m/%d %H:%M:%S"), i['KeyName']]
-      rows.append(row)
+      if(i['Instances'][0]['State']['Name']=='running'):
+        row = [i['Instances'][0]['InstanceId'], i['Instances'][0]['State']['Name'], i['Instances'][0]['InstanceType'],i['Instances'][0]['PublicIpAddress'],i['Instances'][0]['PrivateIpAddress'], \
+            i['Instances'][0]['EbsOptimized'], i['Instances'][0]['VpcId'], i['Instances'][0]['SubnetId'], i['Instances'][0]['ImageId'], i['Instances'][0]['Monitoring']['State'], i['Instances'][0]['LaunchTime'].strftime("%Y/%m/%d %H:%M:%S"), i['Instances'][0]	['KeyName']]
+        rows.append(row)
+      else:
+        row = [i['Instances'][0]['InstanceId'], i['Instances'][0]['State']['Name'], i['Instances'][0]['InstanceType'],'Null','Null', \
+            i['Instances'][0]['EbsOptimized'], 'Null', 'Null', i['Instances'][0]['ImageId'], i['Instances'][0]['Monitoring']['State'], i['Instances'][0]['LaunchTime'].strftime("%Y/%m/%d %H:%M:%S"), i['Instances'][0]	['KeyName']]
+        rows.append(row)
     return rows
 
 def write_excel(sheet, data):
@@ -61,8 +66,8 @@ if __name__ == '__main__':
         con = boto3.client('ec2',region_name=region_code)
         instances = con.describe_instances()
         instances = instances['Reservations']
-        instances = instances[0]
-        instances = instances['Instances']
+        #instances = instances[0]
+        #instances = instances['Instances']
         #print instances
         if len(instances) == 0:
             continue
